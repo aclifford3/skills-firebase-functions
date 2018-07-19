@@ -32,15 +32,22 @@ exports.getUserByMajor = functions.https.onRequest((req, res) => {
     // Grab the text parameter.
     // const original = req.query.text;
     // Push the new message into the Realtime Database using the Firebase Admin SDK.
-    var peopleRef = db.collection('people').doc(req.body.major);
-    peopleRef.get()
-        .then(doc => {
-            console.log('Doc is ', doc.data());
-            return res.status(200).json(doc.data());
+    var peopleRef = db.collection('people');
+    var data;
+    var query = peopleRef.where('major','==',req.body.major)
+    query.get().then(snapshot =>{
+      if(snapshot.empty){
+        console.log('No documents found');
+      }
+      else{
+        data = snapshot.docs.map(documentSnapshot =>{
+          return documentSnapshot.data();
         })
-        .catch(err => {
+      }
+      return res.status(200).json(data);
+    })
+      .catch(err => {
             console.log('Oops! Something went wrong.');
-            throw new Error(err)
-        });
-
+            throw new Error(err);
+      });
 });
