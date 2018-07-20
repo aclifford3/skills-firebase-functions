@@ -43,7 +43,7 @@ exports.getUserByMajor = functions.https.onRequest((req, res) => {
         data = snapshot.docs.map(documentSnapshot =>{
           return documentSnapshot.data();
         })
-      //  console.log('Doc is', documentSnapshot.data());
+       console.log('Doc is', data);
       }
       return res.status(200).json(data);
     })
@@ -68,7 +68,7 @@ exports.getUserByCollege = functions.https.onRequest((req, res) => {
         data = snapshot.docs.map(documentSnapshot =>{
           return documentSnapshot.data();
         })
-      //  console.log('Doc is', documentSnapshot.data());
+       console.log('Doc is', data);
       }
       return res.status(200).json(data);
     })
