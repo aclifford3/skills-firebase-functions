@@ -104,22 +104,23 @@ exports.getUserByCollegeAndMajor = functions.https.onRequest((req, res) => {
 });
 exports.getUserBySkill = functions.https.onRequest((req,res) => {
   var peopleRef = db.collection('people');
+
   var data;
-  var query = peopleRef.where('skill','==',req.body.skill)
+  var query = peopleRef.where('skill.'+ req.body.skill,'>',0).orderBy('skill.'+ req.body.skill)
   query.get().then(snapshot =>{
     if(snapshot.empty){
-      console.log('No documents found');
+     console.log('No documents found');
     }
     else{
       data = snapshot.docs.map(documentSnapshot =>{
-        return documentSnapshot.data();
+       return documentSnapshot.data();
       })
       console.log('Doc is', data);
-    }
-    return res.status(200).json(data);
-  })
+   }
+   return res.status(200).json(data);
+ })
     .catch(err =>{
-      console.log('Oops! Something went wrong.');
+     console.log('Oops! Something went wrong.');
       throw new Error(err);
-    });
+  });
 });
