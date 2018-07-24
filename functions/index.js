@@ -106,7 +106,37 @@ exports.getUserBySkill = functions.https.onRequest((req,res) => {
   var peopleRef = db.collection('people');
 
   var data;
-  var query = peopleRef.where('skill.'+ req.body.skill,'>',0).orderBy('skill.'+ req.body.skill)
+  var query = peopleRef.where('skill.'+ req.body.skill[i],'>',0).orderBy('skill.'+ req.body.skill)
+//  console.log('query is', query);
+  query.get().then(snapshot =>{
+    if(snapshot.empty){
+     console.log('No documents found');
+    }
+    else{
+      data = snapshot.docs.map(documentSnapshot =>{
+       return documentSnapshot.data();
+      })
+      console.log('Doc is', data);
+   }
+   return res.status(200).json(data);
+ })
+    .catch(err =>{
+     console.log('Oops! Something went wrong.');
+      throw new Error(err);
+  });
+});
+
+exports.getUserByMultipleSkill = functions.https.onRequest((req,res) =>{
+  var peopleRef = db.collection('people');
+  var data;
+  var query;
+  console.log('req',req.body);
+  var skill = req.body;
+  for(i in skill){
+   query  = peopleRef.where('skill.'+ skill[i],'>',0)
+  }
+  //query = query.orderBy('skill.'+ req.body.skill[0])
+  console.log('query is', query);
   query.get().then(snapshot =>{
     if(snapshot.empty){
      console.log('No documents found');
