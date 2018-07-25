@@ -129,14 +129,30 @@ exports.getUserBySkill = functions.https.onRequest((req,res) => {
 exports.getUserByMultipleSkill = functions.https.onRequest((req,res) =>{
   var peopleRef = db.collection('people');
   var data;
-  var query;
-  console.log('req',req.body);
-  var skill = req.body;
+  var query = peopleRef;
+  //console.log('req',req.body);
+  var skill = req.body.user.skill;
+  var college = req.body.user.college;
+  var major = req.body.user.major;
+
+
+  //console.log('skill',skill);
+  if(skill.length > 0){
   for(i in skill){
-   query  = peopleRef.where('skill.'+ skill[i],'>',0)
+   query  = query.where('skill.'+ skill[i],'==',true)
+  // console.log('i is',i)
+    }
   }
-  //query = query.orderBy('skill.'+ req.body.skill[0])
-  console.log('query is', query);
+  if(college !== null){
+   //for(i in college){
+     query  = query.where('college',"==",college)
+//  }
+}
+  if(major !== null){
+    query  = query.where('major',"==",major)
+  }
+//  query = query.orderBy('skill.'+ skill[0])
+//  console.log('query is', query);
   query.get().then(snapshot =>{
     if(snapshot.empty){
      console.log('No documents found');
