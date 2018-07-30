@@ -134,6 +134,11 @@ exports.getUserByMultipleSkill = functions.https.onRequest((req,res) =>{
   var skill = req.body.user.skill;
   var college = req.body.user.college;
   var major = req.body.user.major;
+  var status = req.body.user.Status;
+  var currentStatus = req.body.user.currentStatus;
+  var primarySkill = req.body.user.primarySkill;
+  var secondarySkill = re.body.user.secondarySkill;
+
 
 
   //console.log('skill',skill);
@@ -150,6 +155,18 @@ exports.getUserByMultipleSkill = functions.https.onRequest((req,res) =>{
 }
   if(major !== null){
     query  = query.where('major',"==",major)
+  }
+  if(status !== null){
+    query  = query.where('status',"==",status)
+  }
+  if(primarySkill !== null){
+    query  = query.where('Primary Skill',"==",primarySkill)
+  }
+  if(currentStatus !== null){
+    query  = query.where('Current Status',"==",currentStatus)
+  }
+  if(secondarySkill !== null){
+    query  = query.where('secondary Skill',"==",secondarySkill)
   }
 //  query = query.orderBy('skill.'+ skill[0])
 //  console.log('query is', query);
@@ -168,5 +185,47 @@ exports.getUserByMultipleSkill = functions.https.onRequest((req,res) =>{
     .catch(err =>{
      console.log('Oops! Something went wrong.');
       throw new Error(err);
+  });
+});
+
+exports.getListOfCategory = functions.https.onRequest((req,res) =>{
+  let categories = []
+  let allCategories = [];
+  var listRef = db.collection('lists')
+
+  listRef.get().then(querySnapshot => {
+    querySnapshot.forEach(doc => {
+        const data = doc.data();
+        if(data.listName !== undefined) {
+            const categoryName = data.listName.toLowerCase()
+            if(!categories.includes(categoryName)){
+                categories.push(categoryName)
+                const cat = {
+                    listName: categoryName,
+                    listItem: []
+                };
+                allCategories.push(cat)
+            }
+        }
+    });
+
+    querySnapshot.forEach(doc => {
+        const data = doc.data();
+        if(data.listName !== undefined) {
+            const categoryName = data.listName.toLowerCase()
+            for(var i=0;i<allCategories.length;i++){
+                if(allCategories[i].listName===categoryName){
+                    allCategories[i].listItem.push(data.name)
+                }
+            }
+        }
+    });
+
+    return res.status(200).json(allCategories);
+})
+
+  .catch(err =>{
+  console.log('Oops! Something went wrong.');
+   throw new Error(err);
   });
 });
