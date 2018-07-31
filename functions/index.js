@@ -229,3 +229,43 @@ exports.getListOfCategory = functions.https.onRequest((req,res) =>{
    throw new Error(err);
   });
 });
+
+
+exports.addSkill = functions.https.onRequest((req,res) => {
+
+  var data;
+  var time = new Date();
+  //time = time.getMilliseconds();
+  //time = time/1000;
+  for(i in req.body.list){
+     data = {
+    name: req.body.list[i].name,
+    listName: req.body.list[i].listName,
+    subGroup:req.body.list[i].subGroup,
+    dateAdded: time
+    };
+  db.collection('lists').add(data);
+}
+  
+  
+ // return admin.firestore().doc('users/'+user.uid).set(userObject);
+});
+
+exports.addSkillWithoutSubgroup = functions.https.onRequest((req,res) => {
+
+  var data;
+  var time = new Date();
+ // time = time.getMilliseconds();
+  //time = time/1000;
+  for(i in req.body.list){
+     data = {
+    name: req.body.list[i].name,
+    listName: req.body.list[i].listName,
+    dateAdded:time
+    };
+  db.collection('lists').add(data);
+  }
+});
+//exports.addPerson = functions.https.onRequest((req,res) =>{
+
+//})
