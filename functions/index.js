@@ -238,6 +238,7 @@ exports.addSkill = functions.https.onRequest((req,res) => {
   //time = time.getMilliseconds();
   //time = time/1000;
   for(i in req.body.list){
+    if(req.body.list[i].hasOwnProperty('subGroup')){
      data = {
     name: req.body.list[i].name,
     listName: req.body.list[i].listName,
@@ -245,27 +246,46 @@ exports.addSkill = functions.https.onRequest((req,res) => {
     dateAdded: time
     };
   db.collection('lists').add(data);
+  }
+  else{
+    data = {
+      name: req.body.list[i].name,
+      listName: req.body.list[i].listName,
+      dateAdded:time
+      };
+    db.collection('lists').add(data);
+  }
 }
   
   
  // return admin.firestore().doc('users/'+user.uid).set(userObject);
 });
 
-exports.addSkillWithoutSubgroup = functions.https.onRequest((req,res) => {
+exports.addPerson = functions.https.onRequest((req,res) =>{
+    
+    var person = req.body;
+    var data;
 
-  var data;
-  var time = new Date();
- // time = time.getMilliseconds();
-  //time = time/1000;
-  for(i in req.body.list){
-     data = {
-    name: req.body.list[i].name,
-    listName: req.body.list[i].listName,
-    dateAdded:time
-    };
-  db.collection('lists').add(data);
+    
+
+   data ={
+      firstName: person.firstName,
+      lastName: person.lastName,
+      address:person.address,
+      colleges:  person.colleges,
+      referredBy: person.referredBy,
+      skills: person.skills,
+      role: person.role,
+      phone: person.phone,
+      socialMedia: person.socialMedia,
+      status: person.status,
+      experienceLevel: person.experienceLevel,
+      paymentType: person.paymentType,
+      resumes: person.resumes,
+      notes: person.notes,
+      email: person.email,
+      currentProject: person.currentProject
   }
+   console.log("data is ", data);
+   db.collection('people').add(data);
 });
-//exports.addPerson = functions.https.onRequest((req,res) =>{
-
-//})
