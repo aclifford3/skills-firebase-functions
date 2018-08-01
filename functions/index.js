@@ -128,46 +128,32 @@ exports.getUserBySkill = functions.https.onRequest((req,res) => {
 
 exports.getUserByMultipleSkill = functions.https.onRequest((req,res) =>{
   var peopleRef = db.collection('people');
+  var person = req.body.user;
   var data;
   var query = peopleRef;
   //console.log('req',req.body);
-  var skill = req.body.user.skill;
-  var college = req.body.user.college;
-  var major = req.body.user.major;
-  var status = req.body.user.Status;
-  var currentStatus = req.body.user.currentStatus;
-  var primarySkill = req.body.user.primarySkill;
-  var secondarySkill = re.body.user.secondarySkill;
-
+  
 
 
   //console.log('skill',skill);
-  if(skill.length > 0){
-  for(i in skill){
-   query  = query.where('skill.'+ skill[i],'==',true)
+  if(person.hasOwnProperty('skills')){
+  for(i in person.skills){
+   query  = query.where('skills.'+ person.skills[i],'==',true)
   // console.log('i is',i)
     }
-  }
-  if(college !== null){
-   //for(i in college){
-     query  = query.where('college',"==",college)
-//  }
 }
-  if(major !== null){
-    query  = query.where('major',"==",major)
-  }
-  if(status !== null){
-    query  = query.where('status',"==",status)
-  }
-  if(primarySkill !== null){
-    query  = query.where('Primary Skill',"==",primarySkill)
-  }
-  if(currentStatus !== null){
-    query  = query.where('Current Status',"==",currentStatus)
-  }
-  if(secondarySkill !== null){
-    query  = query.where('secondary Skill',"==",secondarySkill)
-  }
+if(person.hasOwnProperty('currentProject')){
+  query  = query.where('currentProject','==',person.currentProject)
+}
+
+if(person.hasOwnProperty('status')){
+  query  = query.where('status','==',person.status)
+}
+
+if(person.hasOwnProperty('experienceLevel')){
+  query  = query.where('experienceLevel','==',person.experienceLevel)
+}
+
 //  query = query.orderBy('skill.'+ skill[0])
 //  console.log('query is', query);
   query.get().then(snapshot =>{
@@ -232,25 +218,25 @@ exports.getListOfCategory = functions.https.onRequest((req,res) =>{
 
 
 exports.addSkill = functions.https.onRequest((req,res) => {
-
+  var newlist = req.body;
   var data;
   var time = new Date();
   //time = time.getMilliseconds();
   //time = time/1000;
-  for(i in req.body.list){
-    if(req.body.list[i].hasOwnProperty('subGroup')){
+  for(i in newlist.list){
+    if(newlist.list[i].hasOwnProperty('subGroup')){
      data = {
-    name: req.body.list[i].name,
-    listName: req.body.list[i].listName,
-    subGroup:req.body.list[i].subGroup,
+    name: newlist.list[i].name,
+    listName: newlist.list[i].listName,
+    subGroup: newlist.list[i].subGroup,
     dateAdded: time
     };
   db.collection('lists').add(data);
   }
   else{
     data = {
-      name: req.body.list[i].name,
-      listName: req.body.list[i].listName,
+      name: newlist.list[i].name,
+      listName: newlist.list[i].listName,
       dateAdded:time
       };
     db.collection('lists').add(data);
