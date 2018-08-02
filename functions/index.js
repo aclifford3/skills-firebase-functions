@@ -128,7 +128,7 @@ exports.getUserBySkill = functions.https.onRequest((req,res) => {
 
 exports.getUserByMultipleSkill = functions.https.onRequest((req,res) =>{
   var peopleRef = db.collection('people');
-  var person = req.body.user;
+  var person = req.body;
   var data;
   var query = peopleRef;
   //console.log('req',req.body);
@@ -152,6 +152,12 @@ if(person.hasOwnProperty('status')){
 
 if(person.hasOwnProperty('experienceLevel')){
   query  = query.where('experienceLevel','==',person.experienceLevel)
+}
+if(person.hasOwnProperty('role')){
+  query  = query.where('role','==',person.role)
+}
+if(person.hasOwnProperty('referralSource')){
+  query  = query.where('refferedBy','==',person.referralSource)
 }
 
 //  query = query.orderBy('skill.'+ skill[0])
@@ -217,61 +223,15 @@ exports.getListOfCategory = functions.https.onRequest((req,res) =>{
 });
 
 
-exports.addSkill = functions.https.onRequest((req,res) => {
-  var newlist = req.body;
-  var data;
-  var time = new Date();
-  //time = time.getMilliseconds();
-  //time = time/1000;
-  for(i in newlist.list){
-    if(newlist.list[i].hasOwnProperty('subGroup')){
-     data = {
-    name: newlist.list[i].name,
-    listName: newlist.list[i].listName,
-    subGroup: newlist.list[i].subGroup,
-    dateAdded: time
-    };
-  db.collection('lists').add(data);
+
+
+exports.addToData = functions.https.onRequest((req,res) =>{
+  if(req.body.hasOwnProperty('person')){
+    var data = req.body.person;
+    db.collection('people').add(data);
   }
   else{
-    data = {
-      name: newlist.list[i].name,
-      listName: newlist.list[i].listName,
-      dateAdded:time
-      };
-    db.collection('lists').add(data);
+    var newList = req.body;
+    db.collection('lists').add(newList);
   }
-}
-  
-  
- // return admin.firestore().doc('users/'+user.uid).set(userObject);
-});
-
-exports.addPerson = functions.https.onRequest((req,res) =>{
-    
-    var person = req.body;
-    var data;
-
-    
-
-   data ={
-      firstName: person.firstName,
-      lastName: person.lastName,
-      address:person.address,
-      colleges:  person.colleges,
-      referredBy: person.referredBy,
-      skills: person.skills,
-      role: person.role,
-      phone: person.phone,
-      socialMedia: person.socialMedia,
-      status: person.status,
-      experienceLevel: person.experienceLevel,
-      paymentType: person.paymentType,
-      resumes: person.resumes,
-      notes: person.notes,
-      email: person.email,
-      currentProject: person.currentProject
-  }
-   console.log("data is ", data);
-   db.collection('people').add(data);
 });
