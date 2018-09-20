@@ -132,32 +132,45 @@ exports.getUserByMultipleSkill = functions.https.onRequest((req,res) =>{
   var data;
   var query = peopleRef;
   //console.log('req',req.body);
-  
+
 
 
   //console.log('skill',skill);
   if(person.hasOwnProperty('skills')){
+    if(person.skills !== undefined || person.skills.length !== 0){
   for(i in person.skills){
    query  = query.where('skills.'+ person.skills[i],'==',true)
   // console.log('i is',i)
     }
+  }
 }
 if(person.hasOwnProperty('currentProject')){
+  if(person.currentProject !== "" ){
   query  = query.where('currentProject','==',person.currentProject)
+}
 }
 
 if(person.hasOwnProperty('status')){
+ if(person.status !== ""){
   query  = query.where('status','==',person.status)
+}
 }
 
 if(person.hasOwnProperty('experienceLevel')){
+  if(person.experienceLevel !== ""){
   query  = query.where('experienceLevel','==',person.experienceLevel)
 }
+}
 if(person.hasOwnProperty('role')){
+  if(person.role !== ""){
   query  = query.where('role','==',person.role)
 }
+}
+
 if(person.hasOwnProperty('referralSource')){
+  if(person.referralSource !== ""){
   query  = query.where('refferedBy','==',person.referralSource)
+}
 }
 
 //  query = query.orderBy('skill.'+ skill[0])
